@@ -8,6 +8,7 @@ const btns = document.querySelectorAll(".numbers");
 const ops = document.querySelectorAll(".operators");
 const total = document.getElementById("res");
 const clear = document.getElementById("clear");
+const back = document.getElementById("back");
 
 function add(firstnumber, secondnumber) {
     result = firstnumber + secondnumber;
@@ -117,3 +118,8 @@ total.addEventListener("click", function() {
 });
 
 clear.addEventListener("click", clearUp);
+
+back.addEventListener("click", function() {
+    vartodis = vartodis.slice(0, -1);
+    display.textContent = vartodis;
+})
