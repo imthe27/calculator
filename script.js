@@ -1,9 +1,8 @@
 let firstnumber = "";
-let first = "";
 let secondnumber = "";
-let second = "";
 let operator = "";
 let result = "";
+let vartodis = "";
 const display = document.getElementById("display");
 const btns = document.querySelectorAll(".numbers");
 const ops = document.querySelectorAll(".operators");
@@ -12,71 +11,96 @@ const clear = document.getElementById("clear");
 
 function add(firstnumber, secondnumber) {
     result = firstnumber + secondnumber;
+    result = result.toFixed(2);
 }
 
 function substract(firstnumber, secondnumber) {
-    result = firstnumber + secondnumber;
+    result = firstnumber - secondnumber;
+    result = result.toFixed(2);    
 }
 
 function multiply(firstnumber, secondnumber) {
     result = firstnumber * secondnumber;
+    result = result.toFixed(2);
 }
 
 function divide(firstnumber, secondnumber) {
     result = firstnumber / secondnumber;
+    result = result.toFixed(2);
+}
+
+function clearUp() {
+    result = "";
+    firstnumber = "";
+    secondnumber = "";
+    vartodis = "";
+    display.textContent = "0";
 }
 
 function operate(firstnumber, secondnumber, operator) {
     switch (operator) {
         case "+":
             add(firstnumber, secondnumber);
-            display.textContent = result.toString();
+            vartodis = result.toString();
             break;
 
         case "-":
             substract(firstnumber, secondnumber);
-            display.textContent = result.toString();
+            vartodis = result.toString();
             break;
 
         case "*":
             multiply(firstnumber, secondnumber);
-            display.textContent = result.toString();
+            vartodis = result.toString();
             break;
 
         case "/":
-            divide(firstnumber, secondnumber);
-            display.textContent = result.toString();
+            if (firstnumber === 0 || secondnumber === 0) {
+                alert("no...\njust no.");
+                clearUp();
+            } else {
+                divide(firstnumber, secondnumber);
+                vartodis = result.toString();
+            }
             break;
     
         default:
-            prompt("Error!");
+            alert("Error!");
             break;
     }
 }
 
 Array.from(btns).forEach(button => {
     button.addEventListener("click", function() {
-        if (display.textContent === "0") {
-            display.textContent = this.id;
+        if (this.id !== ".") {
+            vartodis += this.id;
         } else {
-            if (this.id !== ".") {
-                display.textContent += this.id;
+            if (vartodis.includes(".")) {
+                console.log("error, punto puesto");
             } else {
-                if (display.textContent.includes(".")) {
-                    console.log("error, punto puesto");
-                } else {
-                    display.textContent += this.id;
-                }
+                vartodis += this.id;
             }
         }
+        display.textContent = vartodis;
     });
 });
 
 Array.from(ops).forEach(op => {
     op.addEventListener("click", function() {
-        firstnumber = display.textContent;
-        operator = this.id;
-        display.textContent = "0";
+        if (!firstnumber) {
+            firstnumber = vartodis;
+            operator = this.id;
+            vartodis = "";
+        } else {
+            secondnumber = vartodis;
+            firstnumber = Number(firstnumber);
+            secondnumber = Number(secondnumber);
+            operate(firstnumber, secondnumber, operator);
+            display.textContent = result;
+            firstnumber = result;
+            operator = this.id;
+            vartodis = "";
+        }
     });
 });
 
@@ -85,9 +109,11 @@ total.addEventListener("click", function() {
     firstnumber = Number(firstnumber);
     secondnumber = Number(secondnumber);
     operate(firstnumber, secondnumber, operator);
+    if (vartodis === "") {
+        display.textContent = "0";
+    } else {
+        display.textContent = vartodis;
+    }
 });
 
-clear.addEventListener("click", function() {
-    display.textContent = "0";
-    result = "0";
-})
+clear.addEventListener("click", clearUp);
